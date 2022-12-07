@@ -5,6 +5,7 @@ const connectDB = require('./config/db')
 dotenv.config({path:'./config/config.env'})
 const userRouters = require('./routes/userRoute')
 const productRouters = require('./routes/productRoute')
+const categoryRouters = require('./routes/categoryRoute')
 const app = express()
 
 app.use(express.json())
@@ -14,6 +15,7 @@ app.use(express.urlencoded({extended: false}))
 const PORT = process.env.PORT || 3000
 app.use(userRouters)
 app.use(productRouters)
+app.use(categoryRouters)
 
 // A FUNCTION TO CONNECT THE SERVER FIRST BEFORE IT STARTS LISTENNING FOR REQUEST
 const connectserver = async()=>{

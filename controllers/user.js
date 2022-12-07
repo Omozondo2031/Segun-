@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 //GET ALL USER FROM THE DATABASE
 exports.getAllUser = async(req, res)=>{
     try {
-        const allUser = await User.find({})
+        const allUser = await User.find({}).select('-passwordHash')
         if(allUser){
             res.status(200).json(allUser)
         }
@@ -15,6 +15,7 @@ exports.getAllUser = async(req, res)=>{
 }
 
 //GET A USER BY ID FROM THE DATABASE
+//public 
 exports.getUserById = async(req, res)=>{
     try {
         const user = await User.findById(req.params.id).select('-passwordHash')
@@ -26,6 +27,7 @@ exports.getUserById = async(req, res)=>{
         throw new Error(`something wen wrong user not in DB`)
     }
 }
+
 
 //DELETE A USER FROM THE DATABASE
 exports.deleteUser = async(req, res)=>{
@@ -62,3 +64,4 @@ exports.update = async(req, res)=>{
  }
  res.status(200).json(user)
 }
+

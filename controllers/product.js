@@ -1,13 +1,51 @@
 const Product = require('../models/product')
 
 exports.getAllProduct = async(req, res)=>{
-    const productList = await Product.find({})
-    if(productList){
-        res.status(200).json(productList)
-    }else{
-        res.status(500).json(`can not fetch all products, something went wrong`)
-    }
+    try {
+        const product = await Product.find({}).populate('category')
+        if(product){
+            res.status(200).json(product)
+        }
+        
+        } catch (error) {
+            console.log(error)
+       res.status(500).send(`product not in category`)
+        }
 }
+
+
+exports.getProductByUserId = async(req, res)=>{
+    try {
+        const product = await Product.find({userId:req.params.id}).populate('category')
+        if(product){
+            res.status(200).json(product)
+        }
+        
+        } catch (error) {
+            console.log(error)
+       res.status(500).send(`no product from this user`)
+        }
+}
+
+
+
+exports.getProdutByCategory = async(req, res)=>{
+    try {
+        let filter = {}
+        if(req.query.categories){
+            filter = {category:req.query.category.split(' ')}
+        }
+        const product = await Product.find(filter).populate('category')
+        if(product){
+            res.status(200).json(product)
+        }
+        } catch (error) {
+            console.log(error)
+       res.status(500).send(`product not in category`)
+        }
+}
+
+
 
 exports.getProductById = async(req, res)=>{
     const product = await Product.findById(req.params.id)
@@ -19,13 +57,25 @@ exports.getProductById = async(req, res)=>{
 }
 
 exports.createProduct = async(req, res)=>{
+try {
+  const {title, category, price, brand, description, image} = req.body
 
-    const product = await Product.create(req.body)
+  const product = await Product.create({
+    title,
+    category,
+    price,
+    brand,
+    description,
+    image
+  })
     if(product){
         res.status(200).json(product)
-    }else{
-        res.status(500).json(`something went wrong`)
     }
+} catch (error) {
+    console.log(error)
+    res.status(500).json(`something went wrong can not create product`)
+}
+   
 }
 
 exports.deleteProduct = async(req, res)=>{
@@ -57,11 +107,16 @@ exports.updateProduct = async(req, res)=>{
     }
 }
 
-exports.getProductByCategory = async(req, res)=>{
-    const product = await Product.find({category:req.params.id})
-    if(product){
-        res.status(200).json(product)
-    }else{
-        res.status(500).json(`product by category not found`)
+
+exports.getFeatureProduct = async(req, res)=>{
+    try {
+        const product = await Product.find({isFeature:true})
+        if(product){
+            res.status(200).json(product)
+        }
+    } catch (error) {
+       console.log(error)
+       res.status(500).send(`product not found`)
     }
 }
+

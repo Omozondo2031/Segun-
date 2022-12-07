@@ -8,7 +8,8 @@ exports.register = async(req, res)=>{
    const user = new User({
     name:req.body.name,
     email:req.body.email,
-    passwordHash:bcrypt.hashSync(req.body.password, 10)
+    passwordHash:bcrypt.hashSync(req.body.password, 10),
+    phoneNumber:req.body.phoneNumber
    })
    const newUser = await user.save()
    if(!newUser) return res.status(500).json(`user not created`)
@@ -17,6 +18,7 @@ exports.register = async(req, res)=>{
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      phoneNumber: user.phoneNumber,
       token: generateToken(user._id)
    })
    } catch (error) {
